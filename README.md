@@ -1,79 +1,57 @@
-<<<<<<< HEAD
-# Nuxt Minimal Starter
+Humbox - Red Social Estudiantil
+Descripción
+Humbox es una plataforma social diseñada para estudiantes que permite:
 
-Look at the [Nuxt documentation](https://nuxt.com/docs/getting-started/introduction) to learn more.
+Visualizar publicaciones de otros usuarios
 
-## Setup
+Crear y compartir contenido académico y social
 
-Make sure to install dependencies:
+Personalizar perfiles de usuario
 
-```bash
-# npm
+Tecnologías Principales
+Frontend: Vue 3, Nuxt 3, Nuxt UI
+
+Gestión de estado: Pinia
+
+Estilos: Tailwind CSS
+
+Estructura del Proyecto
+humbox-frontend/
+├── components/    # Componentes reutilizables
+├── composables/   # Lógica reusable
+├── pages/         # Vistas de la aplicación
+├── public/        # Archivos estáticos
+├── stores/        # Gestión de estado (Pinia)
+└── nuxt.config.ts # Configuración de Nuxt
+Instalación
+Clonar el repositorio:
+
+git clone https://github.com/LuisAlvarezSoft/HumboxFrontend.git
+cd HumboxFrontend
+
+Instalar dependencias:
 npm install
 
-# pnpm
-pnpm install
+Iniciar servidor de desarrollo:
 
-# yarn
-yarn install
-
-# bun
-bun install
-```
-
-## Development Server
-
-Start the development server on `http://localhost:3000`:
-
-```bash
-# npm
 npm run dev
 
-# pnpm
-pnpm dev
+Flujo de Trabajo
 
-# yarn
-yarn dev
+El repositorio sigue el siguiente esquema de ramas:
 
-# bun
-bun run dev
-```
+main: Versión de producción
 
-## Production
+qa: Entorno de pruebas
 
-Build the application for production:
+dev: Desarrollo principal
 
-```bash
-# npm
-npm run build
+feature/[nombre]: Ramas para nuevas funcionalidades
 
-# pnpm
-pnpm build
+fix/[nombre]: Ramas para correcciones
 
-# yarn
-yarn build
+Hacer commit de los cambios:
 
-# bun
-bun run build
-```
-
-Locally preview production build:
-
-```bash
-# npm
-npm run preview
-
-# pnpm
-pnpm preview
-
-# yarn
-yarn preview
-
-# bun
-bun run preview
-```
-
-Check out the [deployment documentation](https://nuxt.com/docs/getting-started/deployment) for more information.
-=======
-# HumboxFrontend
->>>>>>> 9340d6e6c386282525df44d8671b39bc48dd2c42
+git add .
+git commit -m "Descripción clara de los cambios"
+Subir los cambios y crear pull request hacia dev
