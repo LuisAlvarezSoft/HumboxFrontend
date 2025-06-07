@@ -2,23 +2,59 @@
 @import "@nuxt/ui";
 
 /* tus colores de marca */
+/* Colores base para modo claro */
 :root {
-    /* shade 500 (el que usa UButton color="primary") */
-    --ui-primary:   #be2621;   /* rojo Humbox */
-    --ui-secondary: #fdfaf6;   /* fondo claro */
-    --ui-tertiary:  #1b2e46;   /* azul oscuro */
-  
-    /* si quieres que las líneas y textos neutrales sigan el estilo */
-    --ui-neutral:   var(--slate-500);
-  }
-  
-  /* opcional: radio global para las tarjetas y botones */
-  :root {
-    --ui-radius: 0.75rem;
-  }
-  
-  /* fondo de la página */
-  body {
-    background-color: var(--ui-secondary);
-  }
+  --ui-surface-elevated: #202d3e; /* superficie elevada para modales */
+  --ui-surface-muted: #1b2533;    /* fondo base oscuro */
+  --ui-surface: #2c3a4e;          /* panel de configuración lateral */
+  --ui-text: #e5e7eb;             /* texto claro */
+  --ui-primary: #be2621;
+  --ui-primary-hover: #a31f1c;
+  --ui-border-muted: #3b4655;
+  --ui-muted: #374151;
+  --ui-muted-hover: #4b5563;
+}
+
+/* Modo oscuro */
+.dark {
+  --ui-primary:     #be2621;
+  --ui-on-primary:  #fff;
+
+  --ui-secondary:   #1b2e46;   /* fondo oscuro */
+  --ui-on-secondary:#faf7f3;
+
+  --ui-tertiary:    #2c3f5f;
+  --ui-on-tertiary: #fff;
+
+  --ui-surface:     #19232e;   /* para tarjetas, modales, etc */
+  --ui-on-surface:  #faf7f3;
+
+  --ui-muted:       #2a3a50;
+  --ui-border:      #334155;
+}
+
+/* Fondo base del body */
+body {
+  background-color: var(--ui-secondary);
+  color: var(--ui-on-secondary);
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+/* Oculta completamente los toasts de Nuxt UI */
+.u-toast-container {
+  display: none !important;
+}
+
+/* 🧹 Desactiva por completo el toast molesto de Nuxt UI */
+body > div:has(.iconify.i-lucide\:x) {
+  display: none !important;
+}
+
+/* Desactiva oscurecimiento exagerado del fondo del modal */
+body > .ui-overlay {
+  background-color: rgba(0, 0, 0, 0.3) !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+}
+
 
