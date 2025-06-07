@@ -1,0 +1,24 @@
+@import "tailwindcss";
+@import "@nuxt/ui";
+
+/* tus colores de marca */
+:root {
+    /* shade 500 (el que usa UButton color="primary") */
+    --ui-primary:   #be2621;   /* rojo Humbox */
+    --ui-secondary: #fdfaf6;   /* fondo claro */
+    --ui-tertiary:  #1b2e46;   /* azul oscuro */
+  
+    /* si quieres que las líneas y textos neutrales sigan el estilo */
+    --ui-neutral:   var(--slate-500);
+  }
+  
+  /* opcional: radio global para las tarjetas y botones */
+  :root {
+    --ui-radius: 0.75rem;
+  }
+  
+  /* fondo de la página */
+  body {
+    background-color: var(--ui-secondary);
+  }
+
