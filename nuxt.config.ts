@@ -8,7 +8,7 @@ export default defineNuxtConfig({
   vite: {
     plugins: [
       tailwindcss(),
-    ],
+    ], 
   },
   ui: {
     theme: {
@@ -28,6 +28,8 @@ export default defineNuxtConfig({
   runtimeConfig:{
     public:{
       apiBase: process.env.API_BASE_URL || 'http://localhost:8000/api',
+      postsApi: process.env.POSTS_API_URL || 'http://localhost:8001/api',
+      geoapifyKey: process.env.NUXT_PUBLIC_GEOAPIFY_KEY,
       appName: process.env.APP_NAME || 'HumBox',
     }
   },
