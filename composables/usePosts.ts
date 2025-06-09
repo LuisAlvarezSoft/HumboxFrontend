@@ -68,9 +68,54 @@ export function usePosts() {
   }
 }
 
+ async function deletePost(postId: number) {
+    try {
+      const { data, error } = await useFetch(`/posts/${postId}`, {
+        method: 'DELETE',
+        baseURL: config.public.postsApi,
+        headers: buildHeaders(true),
+      })
+
+      if (error.value) {
+        console.error('❌ Error al eliminar el post:', error.value)
+        throw error.value
+      }
+
+      return data.value
+    } catch (err) {
+      console.error('💥 Error en deletePost:', err)
+      throw err
+    }
+  }
+
+  async function updatePost(id: number, formData: FormData) {
+  try {
+    const response = await fetch(`${config.public.postsApi}/posts/${id}`, {
+      method: 'POST', // Usa PUT si lo definiste así
+      headers: {
+        'Accept': 'application/json'
+      },
+      body: formData,
+    })
+
+    if (!response.ok) {
+      const error = await response.json()
+      throw new Error(error.message || 'Error al actualizar la publicación')
+    }
+
+    return await response.json()
+  } catch (err) {
+    console.error('❌ Error en updatePost:', err)
+    throw err
+  }
+}
+
+
 
   return {
     fetchPosts,
-    createPost
+    createPost,
+    deletePost,
+    updatePost
   }
 }

@@ -61,7 +61,18 @@ const locationSuggestions = ref<string[]>([])
 onMounted(async () => {
   tagsList.value = await fetchTags()
   resourceTypes.value = await fetchResourceTypes()
+
+  if (props.editMode && props.existingPost) {
+    form.value.description = props.existingPost.description
+    form.value.location = props.existingPost.location
+    form.value.tags = props.existingPost.tags?.map(t => t.id) || []
+    form.value.resource_type_id = props.existingPost.resource_type?.id || null
+
+    // Simulación visual de archivos (no se pueden editar directamente)
+    previewUrls.value = props.existingPost.attached_files.map((f: any) => getFileUrl(f.file_url))
+  }
 })
+
 
 watch(() => props.form.location, async (val) => {
   if (!val || val.length < 2) return

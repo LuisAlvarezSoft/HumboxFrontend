@@ -3,7 +3,12 @@ import { ref } from 'vue'
 import SelectMediaStep from './SelectMediaStep.vue'
 import ConfigurePostStep from './ConfigurePostStep.vue'
 
-const props = defineProps<{ isOpen: boolean }>()
+const props = defineProps<{
+  isOpen: boolean,
+  editMode?: boolean,
+  existingPost?: any
+}>()
+
 const emit = defineEmits(['update:isOpen'])
 
 const step = ref(1)

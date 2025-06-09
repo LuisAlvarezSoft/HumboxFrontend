@@ -22,7 +22,6 @@
         <iframe v-else-if="currentFile.type === 'pdf'" :src="getFileUrl(currentFile.file_url)" class="w-full h-[80vh] border-0 bg-white rounded" />
         <p v-else class="text-white">Tipo no soportado</p>
 
-        <!-- Flechas de archivos -->
         <button v-if="post?.attached_files.length > 1 && currentFileIndex > 0" @click="prevFile" class="absolute left-3 top-1/2 -translate-y-1/2 bg-black/60 hover:bg-black/80 text-white p-2 rounded-full z-30">
           <UIcon name="i-heroicons-chevron-left" class="w-5 h-5" />
         </button>
@@ -44,9 +43,17 @@
           <img src="https://placehold.co/40x40" class="w-10 h-10 rounded-full" />
           <span class="font-semibold">saam.ratt</span>
         </div>
-        <button @click="$emit('close')" class="text-gray-500 hover:text-[var(--ui-primary)] text-xl">
-          <UIcon name="i-heroicons-x-mark" class="w-6 h-6" />
-        </button>
+        <div class="flex items-center gap-3">
+          <button @click="$emit('close')" class="text-gray-500 hover:text-[var(--ui-primary)] text-xl">
+            <UIcon name="i-heroicons-x-mark" class="w-6 h-6" />
+          </button>
+          <button @click="handleDelete" class="text-gray-400 hover:text-red-600 transition" title="Eliminar publicación">
+            <UIcon name="i-heroicons-trash" class="w-5 h-5" />
+          </button>
+          <button @click="openEditModal" class="text-gray-400 hover:text-yellow-500 transition" title="Editar publicación">
+            <UIcon name="i-heroicons-pencil-square" class="w-5 h-5" />
+          </button>
+        </div>
       </div>
 
       <!-- Descripción -->
@@ -80,20 +87,57 @@
         </div>
       </div>
 
+      <!-- Acciones -->
+      <div class="flex flex-col gap-4 mt-2">
+        <div class="flex items-center gap-8 text-gray-500 dark:text-gray-300 text-lg">
+          <button @click="handleToggleLike" class="hover:text-red-500 transition transform hover:scale-110" title="Me gusta">
+            <UIcon :name="isLiked ? 'i-heroicons-heart-solid' : 'i-heroicons-heart'" class="w-7 h-7" />
+          </button>
+          <button @click="handleToggleSaved" class="hover:text-blue-500 transition transform hover:scale-110" title="Guardar">
+            <UIcon :name="isSaved ? 'i-heroicons-bookmark-solid' : 'i-heroicons-bookmark'" class="w-7 h-7" />
+          </button>
+        </div>
+      </div>
+
       <!-- Comentarios -->
       <div>
         <label for="comment" class="text-sm font-medium">Comenta</label>
-        <textarea id="comment" rows="3" placeholder="Escribe algo..." class="w-full mt-1 px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-800 text-sm"></textarea>
-        <button class="mt-2 w-full bg-[var(--ui-primary)] hover:bg-[var(--ui-primary-hover)] text-white py-2 rounded-md text-sm font-medium">
+        <textarea id="comment" rows="3" v-model="newComment" placeholder="Escribe algo..." class="w-full mt-1 px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-800 text-sm"></textarea>
+        <button @click="handleCreateComment" class="mt-2 w-full bg-[var(--ui-primary)] hover:bg-[var(--ui-primary-hover)] text-white py-2 rounded-md text-sm font-medium">
           Publicar comentario
         </button>
+
+        <div class="mt-4 space-y-3 text-sm">
+          <div v-for="comment in comments" :key="comment.id" class="border-b border-gray-200 dark:border-gray-700 pb-2">
+            <p class="font-medium text-[var(--ui-primary)]">Usuario #{{ comment.user_id }}</p>
+            <p class="text-gray-700 dark:text-gray-300">{{ comment.content }}</p>
+          </div>
+        </div>
       </div>
     </div>
+
+    <!-- MODAL DE EDICIÓN (PostEditModal.vue) -->
+    <PostEditModal
+      v-if="showEditModal"
+      :post="post"
+      @close="showEditModal = false"
+      @updated="emit('close')"
+    />
   </div>
 </template>
 
 <script setup lang="ts">
 import { ref, computed, watch } from 'vue'
+import { useLikes } from '@/composables/useLikes'
+import { useSavedPosts } from '@/composables/useSavedPosts'
+import { useComments } from '@/composables/useComments'
+import { usePosts } from '@/composables/usePosts'
+import PostEditModal from '@/components/posts/PostEditModal.vue'
+
+const showEditModal = ref(false)
+function openEditModal() {
+  showEditModal.value = true
+}
 
 const props = defineProps<{
   post: {
@@ -108,12 +152,21 @@ const props = defineProps<{
   currentIndex: number
 }>()
 
-defineEmits(['close', 'navigate'])
+const emit = defineEmits(['close', 'navigate'])
 
 const currentFileIndex = ref(0)
+const newComment = ref('')
+const isLiked = ref(false)
+const isSaved = ref(false)
+const comments = ref<any[]>([])
 
-watch(() => props.post?.id, () => {
+watch(() => props.post?.id, async () => {
   currentFileIndex.value = 0
+  isLiked.value = false
+  isSaved.value = false
+  if (props.post) {
+    comments.value = await fetchComments(props.post.id)
+  }
 })
 
 const currentFile = computed(() => {
@@ -136,5 +189,59 @@ function getFileUrl(fileUrl: string) {
   return fileUrl.startsWith('http')
     ? fileUrl
     : `http://localhost:8001/${fileUrl.startsWith('storage/') ? fileUrl : 'storage/' + fileUrl}`
+}
+
+const { toggleLike } = useLikes()
+const { toggleSaved } = useSavedPosts()
+const { createComment, fetchComments } = useComments()
+const { deletePost } = usePosts()
+
+async function handleDelete() {
+  if (!props.post) return
+  const confirmacion = confirm('¿Estás seguro de que deseas eliminar esta publicación?')
+  if (!confirmacion) return
+
+  try {
+    await deletePost(props.post.id)
+    alert('Publicación eliminada correctamente')
+    emit('close')
+  } catch (err) {
+    console.error('Error al eliminar la publicación:', err)
+    alert('Hubo un error al eliminar la publicación')
+  }
+}
+
+async function handleToggleLike() {
+  if (!props.post) return
+  try {
+    const res = await toggleLike(props.post.id)
+    isLiked.value = !isLiked.value
+    console.log(res.message)
+  } catch (err) {
+    console.error('Error al dar like:', err)
+  }
+}
+
+async function handleToggleSaved() {
+  if (!props.post) return
+  try {
+    const res = await toggleSaved(props.post.id)
+    isSaved.value = !isSaved.value
+    console.log(res.message)
+  } catch (err) {
+    console.error('Error al guardar publicación:', err)
+  }
+}
+
+async function handleCreateComment() {
+  if (!props.post || !newComment.value.trim()) return
+  try {
+    const res = await createComment(props.post.id, newComment.value)
+    console.log(res.message)
+    newComment.value = ''
+    comments.value = await fetchComments(props.post.id)
+  } catch (err) {
+    console.error('Error al comentar:', err)
+  }
 }
 </script>
