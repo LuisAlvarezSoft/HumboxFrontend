@@ -31,7 +31,7 @@
 
         <!-- Campo de entrada: correo electrónico o usuario -->
         <div>
-          <label class="block text-sm font-medium mb-1">Correo electrónico o usuario</label>
+          <label class="block text-sm font-medium mb-1">Usuario</label>
           <input
             v-model="formData.login"
             type="text"
