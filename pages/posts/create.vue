@@ -1,7 +1,9 @@
 <script setup>
-import CreatePostFlow from '~/components/posts/CreatePostFlow.vue'
+// import CreatePostFlow from '~/components/posts/CreatePostFlow.vue'
 </script>
 
 <template>
-  <CreatePostFlow />
+  <div>
+    hola
+  </div>
 </template>
