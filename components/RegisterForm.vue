@@ -202,7 +202,7 @@ const handleSubmit = async () => {
     );
 
     // Redirige al perfil tras el registro exitoso
-    await router.push('/profile');
+    router.push('/profile/setup')
 
   } catch (error) {
     if (error.data) {

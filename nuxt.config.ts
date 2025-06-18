@@ -7,9 +7,10 @@ export default defineNuxtConfig({
   css: ['~/assets/css/main.css'],
   vite: {
     plugins: [
-      tailwindcss(),
+      tailwindcss()
     ], 
   },
+  plugins: ['~/plugins/chart.js'],
   ui: {
     theme: {
       // declara los colores dinámicos que usarás en los componentes
@@ -23,7 +24,8 @@ export default defineNuxtConfig({
         'error',
         'neutral'
       ]
-    }
+    },
+    fonts: false
   },
   runtimeConfig:{
     public:{
@@ -35,7 +37,6 @@ export default defineNuxtConfig({
   },
   modules: [
     '@nuxt/eslint',
-    '@nuxt/fonts',
     '@nuxt/icon',
     '@nuxt/ui',
     'nuxt-lucide-icons'
